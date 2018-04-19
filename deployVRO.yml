@@ -1,0 +1,30 @@
+---
+- hosts: centos
+  gather_facts: True
+  ignore_errors: yes
+  vars_files:
+  - vars.yml
+  tasks:
+  - name: Deploy vRealize Orchestrator
+    vro_deploy_ova:
+      ovftool_path: "{{ ovftool_path }}"
+      datacenter: "{{ datacenter }}"
+      datastore: "{{ datastore }}"
+      portgroup: "{{ portgroup }}"
+      cluster: "{{ cluster }}"
+      vmname: "{{ vmname }}"      
+      dns_server: "{{ dns_server }}"
+      gateway: "{{ gateway }}"
+      ip_address: "{{ ip_address }}"
+      netmask: "{{ netmask }}"
+      admin_password: "{{ admin_password }}"
+      ssh_enable: "{{ ssh_enable }}"
+      path_to_ova: "{{ path_to_ova }}"
+      ova_file: "{{ ova_file }}"
+      disk_mode: "{{ disk_mode }}"
+      vcenter: "{{ vcenter }}"
+      vcenter_user: "{{ vcenter_user }}"
+      vcenter_passwd: "{{ vcenter_passwd }}"
+    register: vro_deploy_ova
+  - name: Notice -- Waiting briefly for databases to settle.
+    wait_for: host="{{ip_address}}" port=5480 delay=30 timeout=600
